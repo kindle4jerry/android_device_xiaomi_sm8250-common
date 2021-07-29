@@ -12,12 +12,16 @@
 
 using android::base::GetProperty;
 
+#define HWC_PROP "ro.boot.hwc"
+#define SKU_PROP "ro.boot.product.hardware.sku"
+
 void search_variant(const std::vector<variant_info_t> variants) {
-    std::string prop;
+    std::string hwc_value = GetProperty(HWC_PROP, "");
+    std::string sku_value = GetProperty(SKU_PROP, "");
 
     for (const auto& variant : variants) {
-        prop = GetProperty(variant.prop_key, "");
-        if (prop.find(variant.prop_value) != std::string::npos) {
+        if ((variant.hwc_value == "" || variant.hwc_value == hwc_value) &&
+            (variant.sku_value == "" || variant.sku_value == sku_value)) {
             set_variant_props(variant);
             break;
         }
@@ -33,6 +37,9 @@ void set_variant_props(const variant_info_t variant) {
     set_ro_build_prop("fingerprint", variant.build_fingerprint);
     property_override("ro.bootimage.build.fingerprint", variant.build_fingerprint.c_str());
     property_override("ro.build.description", variant.build_description.c_str());
+
+    if (variant.nfc)
+        property_override(SKU_PROP, "nfc");
 }
 
 void property_override(char const prop[], char const value[], bool add) {

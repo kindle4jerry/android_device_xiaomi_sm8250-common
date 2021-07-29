@@ -41,6 +41,9 @@ BOARD_SUPPORTS_SOUND_TRIGGER := true
 BOARD_USES_ALSA_AUDIO := true
 USE_CUSTOM_AUDIO_POLICY := 1
 
+# Bluetooth
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(COMMON_PATH)/bluetooth/include
+
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := kona
 TARGET_NO_BOOTLOADER := true
@@ -59,6 +62,9 @@ TARGET_USES_GRALLOC1 := true
 TARGET_USES_GRALLOC4 := true
 TARGET_USES_HWC2 := true
 TARGET_USES_ION := true
+ifeq ($(TARGET_HAS_FOD),true)
+TARGET_USES_FOD_ZPOS := true
+endif
 
 # DRM
 TARGET_ENABLE_MEDIADRM_64 := true
@@ -77,6 +83,8 @@ endif
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := $(COMMON_PATH)/framework_compatibility_matrix.xml
 DEVICE_MATRIX_FILE += $(COMMON_PATH)/compatibility_matrix.xml
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/manifest.xml
+ODM_MANIFEST_SKUS += nfc
+ODM_MANIFEST_NFC_FILES := $(COMMON_PATH)/manifest_nfc.xml
 
 # Kernel
 ifeq ($(PRODUCT_VIRTUAL_AB_OTA),true)
@@ -182,7 +190,7 @@ TARGET_RELEASETOOLS_EXTENSIONS := $(COMMON_PATH)
 ENABLE_VENDOR_RIL_SERVICE := true
 
 # Security patch level
-VENDOR_SECURITY_PATCH := 2021-04-01
+VENDOR_SECURITY_PATCH := 2021-05-01
 
 # Sepolicy
 include device/qcom/sepolicy_vndr/SEPolicy.mk
@@ -207,12 +215,6 @@ BOARD_SEPOLICY_M4DEFS += \
     sysfs_ssr=vendor_sysfs_ssr \
     wcnss_service_exec=vendor_wcnss_service_exec \
     wifi_vendor_data_file=vendor_wifi_vendor_data_file
-
-# Treble
-BOARD_VNDK_VERSION := current
-
-# USB
-TARGET_QTI_USB_SUPPORTS_AUDIO_ACCESSORY := true
 
 # Verified Boot
 BOARD_AVB_ENABLE := true

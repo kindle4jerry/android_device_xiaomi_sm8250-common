@@ -1,4 +1,4 @@
-# All unpinned blobs below are extracted from alioth-user 11 RKQ1.200826.002 V12.5.1.0.RKHMIXM release-keys
+# All unpinned blobs below are extracted from alioth-user 11 RKQ1.200826.002 V12.5.2.0.RKHMIXM release-keys
 
 # ADSP
 vendor/bin/adsprpcd
@@ -683,11 +683,6 @@ vendor/bin/thermal-engine
 vendor/bin/time_daemon
 vendor/etc/init/init.time_daemon.rc
 vendor/lib64/libtime_genoff.so
-
-# Touchfeature
-vendor/bin/hw/vendor.xiaomi.hardware.touchfeature@1.0-service
-vendor/etc/init/vendor.xiaomi.hardware.touchfeature@1.0-service.rc
-vendor/lib64/hw/vendor.xiaomi.hardware.touchfeature@1.0-impl.so
 
 # Trusted Execution Environment connector
 vendor/bin/hw/vendor.qti.hardware.qteeconnector@1.0-service
