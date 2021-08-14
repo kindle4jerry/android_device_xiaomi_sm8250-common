@@ -80,7 +80,9 @@ TARGET_SURFACEFLINGER_FOD_LIB := //$(COMMON_PATH):libfod_extension.xiaomi_kona
 endif
 
 # HIDL
-DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := $(COMMON_PATH)/framework_compatibility_matrix.xml
+DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
+    $(COMMON_PATH)/framework_compatibility_matrix.xml \
+    vendor/lineage/config/device_framework_matrix.xml
 DEVICE_MATRIX_FILE += $(COMMON_PATH)/compatibility_matrix.xml
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/manifest.xml
 ODM_MANIFEST_SKUS += nfc
@@ -102,6 +104,9 @@ BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_CLANG_COMPILE := true
 TARGET_KERNEL_SOURCE := kernel/xiaomi/sm8250
+
+# NFC
+TARGET_USES_NQ_NFC := true
 
 # Partitions
 ifeq ($(PRODUCT_VIRTUAL_AB_OTA),true)
@@ -197,30 +202,11 @@ include device/qcom/sepolicy_vndr/SEPolicy.mk
 BOARD_PLAT_PRIVATE_SEPOLICY_DIR += $(COMMON_PATH)/sepolicy/private
 BOARD_PLAT_PUBLIC_SEPOLICY_DIR += $(COMMON_PATH)/sepolicy/public
 BOARD_VENDOR_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
-BOARD_SEPOLICY_M4DEFS += \
-    debugfs_clk=vendor_debugfs_clk \
-    debugfs_ipc=vendor_debugfs_ipc \
-    latency_device=vendor_latency_device \
-    nfc_vendor_data_file=vendor_nfc_vendor_data_file \
-    persist_audio_file=vendor_persist_audio_file \
-    persist_sensors_file=vendor_persist_sensors_file \
-    public_vendor_default_prop=vendor_public_vendor_default_prop \
-    sensors_prop=vendor_sensors_prop \
-    sysfs_boot_adsp=vendor_sysfs_boot_adsp \
-    sysfs_devfreq=vendor_sysfs_devfreq \
-    sysfs_fingerprint=vendor_sysfs_fingerprint \
-    sysfs_graphics=vendor_sysfs_graphics \
-    sysfs_kgsl=vendor_sysfs_kgsl \
-    sysfs_scsi_host=vendor_sysfs_scsi_host \
-    sysfs_ssr=vendor_sysfs_ssr \
-    wcnss_service_exec=vendor_wcnss_service_exec \
-    wifi_vendor_data_file=vendor_wifi_vendor_data_file
 
 # Verified Boot
 BOARD_AVB_ENABLE := true
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --set_hashtree_disabled_flag
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 2
-BOARD_AVB_VBMETA_SYSTEM := system system_ext
+BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
+BOARD_AVB_VBMETA_SYSTEM := system system_ext product
 BOARD_AVB_VBMETA_SYSTEM_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
 BOARD_AVB_VBMETA_SYSTEM_ALGORITHM := SHA256_RSA2048
 BOARD_AVB_VBMETA_SYSTEM_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)

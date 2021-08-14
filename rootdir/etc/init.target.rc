@@ -32,6 +32,13 @@ on early-init
     write /proc/sys/kernel/sched_boost 1
 
 on init
+    # Setup permission for Power HAL
+    chown system system /dev/stune/top-app/schedtune.boost
+    chown system system /dev/cpu_dma_latency
+
+    chmod 0664 /dev/stune/top-app/schedtune.boost
+    chmod 0664 /dev/cpu_dma_latency
+
     write /dev/stune/foreground/schedtune.sched_boost_no_override 1
     write /dev/stune/top-app/schedtune.sched_boost_no_override 1
     write /dev/stune/schedtune.colocate 0
@@ -156,14 +163,8 @@ on boot
     # Load all wlan drivers
     exec_background u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules/ qca_cld3_qca6390 qca_cld3_qca6490
 
-on property:vendor.display.lcd_density=560
-   setprop dalvik.vm.heapgrowthlimit 256m
-
 on property:persist.vendor.sys.fp.fod.large_field=1
     write sys/bus/i2c/devices/3-0049/fod_area 1
-
-on property:vendor.display.lcd_density=640
-   setprop dalvik.vm.heapgrowthlimit 512m
 
 on boot && property:persist.vendor.usb.controller.default=*
     setprop vendor.usb.controller ${persist.vendor.usb.controller.default}
@@ -241,6 +242,22 @@ service vendor.cnss_diag /system/vendor/bin/cnss_diag -q -f -b 128 -t HELIUM
    user system
    group system wifi inet sdcard_rw media_rw diag
    oneshot
+
+service vendor.nv_mac /vendor/bin/nv_mac
+    class late_start
+    user system
+    group system inet net_admin wifi net_raw
+    oneshot
+
+on property:init.svc.vendor.nv_mac=stopped
+    start vendor.btmac-sh
+
+service vendor.btmac-sh /vendor/bin/init.mi.btmac.sh
+    class late_start
+    user system
+    group system bluetooth wifi
+    oneshot
+    disabled
 
 service dcvs-sh /vendor/bin/init.qti.dcvs.sh
     class late_start
