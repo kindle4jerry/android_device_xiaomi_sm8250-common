@@ -229,7 +229,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.biometrics.fingerprint@2.3-service.xiaomi
 
-ifeq ($(TARGET_HAS_FOD),true)
+ifeq ($(TARGET_HAS_UDFPS),true)
 PRODUCT_PACKAGES += \
     libudfpshandler
 
@@ -241,7 +241,7 @@ endif
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0.vendor
 
-# GPS
+# GNSS
 PRODUCT_PACKAGES += \
     android.hardware.gnss@1.1.vendor \
     android.hardware.gnss@2.1.vendor
@@ -250,6 +250,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.health@2.1-impl \
     android.hardware.health@2.1-service
+
+ifneq ($(TARGET_IS_VAB),true)
+PRODUCT_PACKAGES += \
+    android.hardware.health@2.1-impl.recovery
+endif
 
 # HIDL
 PRODUCT_PACKAGES += \
@@ -262,16 +267,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/permissions/privapp-permissions-hotword.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/privapp-permissions-hotword.xml
 
-# IFAA manager
+# IFAAService
 PRODUCT_PACKAGES += \
     IFAAService
 
 # IPACM
 PRODUCT_PACKAGES += \
     ipacm \
-    IPACM_cfg.xml \
-    libipanat \
-    liboffloadhal
+    IPACM_cfg.xml
 
 # Keymaster
 PRODUCT_PACKAGES += \
@@ -303,7 +306,7 @@ PRODUCT_COPY_FILES += \
 # Mlipay
 PRODUCT_PACKAGES += \
     vendor.xiaomi.hardware.mlipay@1.1.vendor \
-    vendor.xiaomi.hardware.mtdservice@1.0.vendor
+    vendor.xiaomi.hardware.mtdservice@1.2.vendor
 
 # Net
 PRODUCT_PACKAGES += \
@@ -320,7 +323,9 @@ PRODUCT_PACKAGES += \
     libchrome.vendor \
     NfcNci \
     SecureElement \
-    Tag \
+    Tag
+
+PRODUCT_PACKAGES += \
     android.hardware.secure_element@1.2.vendor
 
 PRODUCT_COPY_FILES += \
@@ -354,7 +359,6 @@ PRODUCT_ENFORCE_RRO_TARGETS := *
 PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += $(LOCAL_PATH)/overlay/packages/apps/CarrierConfig
 
 # Partitions
-PRODUCT_BUILD_SUPER_PARTITION := false
 PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
 # Perf
@@ -367,10 +371,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
-
-PRODUCT_SOONG_NAMESPACES += \
-    hardware/google/interfaces \
-    hardware/google/pixel
 
 # Public libraries
 PRODUCT_COPY_FILES += \
@@ -397,6 +397,10 @@ PRODUCT_PACKAGES += \
 
 # Rootdir
 PRODUCT_PACKAGES += \
+    fstab.qcom \
+    fstab.qcom_ramdisk
+
+PRODUCT_PACKAGES += \
     init.class_main.sh \
     init.mdm.sh \
     init.mi.btmac.sh \
@@ -411,8 +415,6 @@ PRODUCT_PACKAGES += \
     init.recovery.qcom.rc \
     init.target.rc \
     init.xiaomi.rc \
-    fstab.qcom \
-    fstab.qcom_ramdisk \
     ueventd.qcom.rc
 
 # Sensors
@@ -426,7 +428,10 @@ PRODUCT_PACKAGES += \
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
-    hardware/xiaomi
+    hardware/google/interfaces \
+    hardware/google/pixel \
+    hardware/xiaomi \
+    vendor/qcom/opensource/usb/etc
 
 # Telephony
 PRODUCT_PACKAGES += \
@@ -457,9 +462,6 @@ PRODUCT_PACKAGES += \
     init.qcom.usb.rc \
     init.qcom.usb.sh
 
-PRODUCT_SOONG_NAMESPACES += \
-    vendor/qcom/opensource/usb/etc
-
 # Vendor service manager
 PRODUCT_PACKAGES += \
     vndservicemanager
@@ -471,7 +473,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/vibrator/excluded-input-devices.xml:$(TARGET_COPY_OUT_VENDOR)/etc/excluded-input-devices.xml
 
-# WiFi
+# Wi-Fi
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service \
     hostapd \
@@ -489,7 +491,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
     $(LOCAL_PATH)/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
 
-# WiFi Display
+# Wi-Fi Display
 PRODUCT_PACKAGES += \
     libnl \
     libwfdaac_vendor
